@@ -14,6 +14,8 @@
 
 #define INBUF_SIZE 64
 
+#define LED_STAT1   5     // PD5
+
 static uint8_t inBuf[INBUF_SIZE];
 static uint8_t checksum;
 static uint8_t commandMW;
@@ -29,6 +31,18 @@ static uint32_t GPS_rawTime_tow;
 
 void setup()  
 {
+  // Set PD5
+  pinMode(LED_STAT1, OUTPUT);
+  digitalWrite(LED_STAT1, HIGH);
+  delay(1000);
+  digitalWrite(LED_STAT1, LOW); delay(250);
+  digitalWrite(LED_STAT1, HIGH); delay(250);
+  digitalWrite(LED_STAT1, LOW); delay(250);
+  digitalWrite(LED_STAT1, HIGH); delay(250);
+  digitalWrite(LED_STAT1, LOW); delay(250);
+  digitalWrite(LED_STAT1, HIGH); delay(250);
+  delay(1000);
+  
   Serial.begin(115200);
   logger.init();
 }
@@ -40,15 +54,25 @@ void loop() // run over and over
 
   // If you dont need a certain log just comment out the two lines for sending and reading
   p.send_msp(MSP_ATTITUDE, data, 0);
+  digitalWrite(LED_STAT1, LOW);
   readData();
+  digitalWrite(LED_STAT1, HIGH);
   p.send_msp(MSP_RAW_IMU, data, 0);
+  digitalWrite(LED_STAT1, LOW);
   readData();
+  digitalWrite(LED_STAT1, HIGH);
   p.send_msp(MSP_RC, data, 0);
+  digitalWrite(LED_STAT1, LOW);
   readData();
+  digitalWrite(LED_STAT1, HIGH);
   p.send_msp(MSP_RAW_GPS, data, 0);
+  digitalWrite(LED_STAT1, LOW);
   readData();
+  digitalWrite(LED_STAT1, HIGH);
   p.send_msp(MSP_TIME_GPS, data, 0);
+  digitalWrite(LED_STAT1, LOW);
   readData();
+  digitalWrite(LED_STAT1, HIGH);
 }
 
 void readData()
