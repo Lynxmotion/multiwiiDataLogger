@@ -42,8 +42,8 @@ void CardLogger::init()
     // infinite loop with blinking LED_STAT1
     while(1)
     {
-      digitalWrite(LED_STAT1, LOW); delay(100);
-      digitalWrite(LED_STAT1, HIGH); delay(100);
+      digitalWrite(LED_STAT1, LOW); delay(50);
+      digitalWrite(LED_STAT1, HIGH); delay(50);
     }
     return;
   }
