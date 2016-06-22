@@ -1,12 +1,14 @@
 #include <Arduino.h>
 
-struct XYAngle {
+struct XYAngle
+{
   int16_t angleX;
   int16_t angleY;
   int16_t heading;
 };
 
-struct IMUValues {
+struct IMUValues
+{
   int16_t accX;
   int16_t accY;
   int16_t accZ;
@@ -14,24 +16,26 @@ struct IMUValues {
   int16_t gyroX;
   int16_t gyroY;
   int16_t gyroZ;
-
 };
 
-struct RCInput {
+struct RCInput
+{
   int16_t roll;
   int16_t pitch;
   int16_t yaw;
   int16_t throttle;
 };
 
-struct MotorValues {
+struct MotorValues
+{
   int16_t motor1;
   int16_t motor2;
   int16_t motor3;
   int16_t motor4;
 };
 
-struct GPSValues {
+struct GPSValues
+{
   uint8_t hasFix;
   uint8_t satNumber;
   uint32_t lat;
@@ -40,8 +44,14 @@ struct GPSValues {
   uint16_t groundSpeed;
 };
 
+struct GPS_TimeValues
+{
+  uint16_t week;
+  uint32_t tow;
+};
 
-static enum _serial_state {
+static enum _serial_state
+{
   IDLE,
   HEADER_START,
   HEADER_M,
@@ -50,7 +60,4 @@ static enum _serial_state {
   HEADER_CMD,
 } 
 c_state;
-
-
-
 

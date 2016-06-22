@@ -5,8 +5,8 @@
 #include "serialstate.h"
 #endif
 
-class CardLogger {
-
+class CardLogger
+{
 public:
   CardLogger();
   void init();
@@ -14,6 +14,7 @@ public:
   void logIMU(IMUValues values);
   void logRC(RCInput values);
   void logGPS(GPSValues values);
+  void logGPS_Time(GPS_TimeValues values);
 
 private:
   String dir;

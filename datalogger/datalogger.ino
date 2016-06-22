@@ -22,58 +22,63 @@ static uint8_t dataSize;
 
 static Protocol p;
 static CardLogger logger;
-int8_t c,n;  
+int8_t c,n;
+
+static uint16_t GPS_rawTime_week;
+static uint32_t GPS_rawTime_tow;
 
 void setup()  
 {
-
   Serial.begin(115200);
   logger.init();
-
 }
 
 void loop() // run over and over
 {
-
   uint8_t  datad = 0;
   uint8_t  *data = & datad;
 
   // If you dont need a certain log just comment out the two lines for sending and reading
-  p.send_msp( MSP_ATTITUDE  ,data, 0);
+  p.send_msp(MSP_ATTITUDE, data, 0);
   readData();
-  p.send_msp( MSP_RAW_IMU  ,data, 0);
+  p.send_msp(MSP_RAW_IMU, data, 0);
   readData();
-  p.send_msp( MSP_RC  ,data, 0);
+  p.send_msp(MSP_RC, data, 0);
   readData();
-  p.send_msp( MSP_RAW_GPS ,data, 0);
-  readData(); 
-
+  p.send_msp(MSP_RAW_GPS, data, 0);
+  readData();
+  p.send_msp(MSP_TIME_GPS, data, 0);
 }
 
-void readData() {
-
+void readData()
+{
   delay(60);
 
-  while (Serial.available()) {
-
+  while (Serial.available())
+  {
     byte c = Serial.read();
 
-    if (c_state == IDLE) {
+    if (c_state == IDLE)
+    {
       c_state = (c=='$') ? HEADER_START : IDLE;
     } 
-    else if (c_state == HEADER_START) {
+    else if (c_state == HEADER_START)
+    {
       c_state = (c=='M') ? HEADER_M : IDLE;
     } 
-    else if (c_state == HEADER_M) {
+    else if (c_state == HEADER_M)
+    {
       c_state = (c=='>') ? HEADER_ARROW : IDLE;
     } 
-    else if (c_state == HEADER_ARROW) {
-
-      if (c > INBUF_SIZE) {  // now we are expecting the payload size
+    else if (c_state == HEADER_ARROW)
+    {
+      if (c > INBUF_SIZE)
+      {
+        // now we are expecting the payload size
         c_state = IDLE;
-
       } 
-      else {
+      else
+      {
         dataSize = c;
         offset = 0;
         checksum = 0;
@@ -81,58 +86,53 @@ void readData() {
         c_state = HEADER_SIZE;  
       }
     } 
-    else if (c_state == HEADER_SIZE) {
+    else if (c_state == HEADER_SIZE)
+    {
       commandMW = c;
       checksum ^= c;
       c_state = HEADER_CMD;
     } 
-    else if (c_state == HEADER_CMD && offset < dataSize) {
+    else if (c_state == HEADER_CMD && offset < dataSize)
+    {
       checksum ^= c;
       inBuf[offset++] = c;
     } 
-    else if (c_state == HEADER_CMD && offset >= dataSize) {
-
-      if (checksum == c) {
-        if (commandMW == MSP_ATTITUDE) {
+    else if (c_state == HEADER_CMD && offset >= dataSize)
+    {
+      if (checksum == c)
+      {
+        if (commandMW == MSP_ATTITUDE)
+        {
           XYAngle result = p.evalAtt(inBuf);
           logger.logXYAngle(result);
         }
-        if (commandMW == MSP_RAW_IMU) {
+        if (commandMW == MSP_RAW_IMU)
+        {
           IMUValues result = p.evalIMU(inBuf);
           logger.logIMU(result);
         }
-        if (commandMW == MSP_RC) {
+        if (commandMW == MSP_RC)
+        {
           RCInput result = p.evalRC(inBuf);
           logger.logRC(result);
         }
-        if (commandMW == MSP_RAW_GPS) {
+        if (commandMW == MSP_RAW_GPS)
+        {
           GPSValues result = p.evalGPS(inBuf);
           logger.logGPS(result);
         }
+        if (commandMW == MSP_RAW_GPS)
+        {
+          GPS_TimeValues result = p.evalGPS_Time(inBuf);
+          logger.logGPS_Time(result);
 
+          // Update global time stamp
+          GPS_rawTime_week = result.week;
+          GPS_rawTime_tow = result.tow;
+        }
       } 
-
       c_state = IDLE;
     }
-
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

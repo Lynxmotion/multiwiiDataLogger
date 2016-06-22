@@ -14,53 +14,54 @@
  ** CS - pin 4 or 53 on mega
  
  For mega check
- 
  http://arduino.cc/de/Reference/SPI
  
  */
-
 
 const int chipSelect = 4;
 const String seperator = ";";
 
 String  directory;
 
-CardLogger::CardLogger() {
-
-
+CardLogger::CardLogger()
+{
 }
 
-void CardLogger::init() {
-  while (!Serial) {
+void CardLogger::init()
+{
+  while (!Serial)
+  {
   }
 
   pinMode(chipSelect, OUTPUT);
 
-  if (!SD.begin(chipSelect)) {
+  if (!SD.begin(chipSelect))
+  {
     return;
   }
 
   String directoryPreFix = "log_";
 
-  for (int i = 0; i <= 500; i++) {
-
+  for (int i = 0; i <= 500; i++)
+  {
     String dir  = directoryPreFix;
     dir.concat(i);
     char charDir[dir.length()+1];
     dir.toCharArray(charDir, sizeof(charDir));
 
-    if (!SD.exists(charDir)) {
-      if(SD.mkdir(charDir)) {
+    if (!SD.exists(charDir))
+    {
+      if(SD.mkdir(charDir))
+      {
         directory =  String(charDir);
         break;
       } 
-
     }
   }
 }
 
-void CardLogger::logXYAngle(XYAngle angle) {
-
+void CardLogger::logXYAngle(XYAngle angle)
+{
   String s(directory);
   s.concat("/angle.csv");
   char charDir[s.length()+1];
@@ -77,11 +78,10 @@ void CardLogger::logXYAngle(XYAngle angle) {
   dataFile.println(angle.heading);
 
   dataFile.close(); 
-
 }
 
-void CardLogger::logIMU(IMUValues values) {
-
+void CardLogger::logIMU(IMUValues values)
+{
   String s(directory);
   s.concat("/imu.csv");
   char charDir[s.length()+1];
@@ -109,12 +109,11 @@ void CardLogger::logIMU(IMUValues values) {
   dataFile.print(seperator);
   dataFile.println(values.gyroZ);
 
-  dataFile.close(); 
-
+  dataFile.close();
 }
 
-void CardLogger::logRC(RCInput values) {
-
+void CardLogger::logRC(RCInput values)
+{
   String s(directory);
   s.concat("/rc.csv");
   char charDir[s.length()+1];
@@ -137,12 +136,11 @@ void CardLogger::logRC(RCInput values) {
   dataFile.print(seperator);
   dataFile.println(values.throttle);
 
-  dataFile.close(); 
-
+  dataFile.close();
 } 
 
-void CardLogger::logGPS(GPSValues values) {
-
+void CardLogger::logGPS(GPSValues values)
+{
   String s(directory);
   s.concat("/gps.csv");
   char charDir[s.length()+1];
@@ -171,6 +169,25 @@ void CardLogger::logGPS(GPSValues values) {
   dataFile.println(values.groundSpeed);
 
   dataFile.close(); 
+}
 
+void CardLogger::logGPS_Time(GPS_TimeValues values)
+{
+  String s(directory);
+  s.concat("/gps_time.csv");
+  char charDir[s.length()+1];
+  s.toCharArray(charDir, sizeof(charDir));
+
+  File dataFile = SD.open(charDir, FILE_WRITE);
+
+  dataFile.print(millis());
+
+  dataFile.print(seperator);
+  dataFile.print(values.week);
+
+  dataFile.print(seperator);
+  dataFile.print(values.tow);
+
+  dataFile.close(); 
 }
 

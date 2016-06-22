@@ -26,6 +26,8 @@
 #define MSP_BOXIDS               119   //out message         get the permanent IDs associated to BOXes
 #define MSP_SERVO_CONF           120   //out message         Servo settings
 
+#define MSP_TIME_GPS             150   //out message         GPS TIME return in GNSS calendar format (http://www.gnsscalendar.com/)
+
 #define MSP_SET_RAW_RC           200   //in message          8 rc chan
 #define MSP_SET_RAW_GPS          201   //in message          fix, numsat, lat, lon, alt, speed
 #define MSP_SET_PID              202   //in message          P I D coeff (9 are used currently)
@@ -59,9 +61,8 @@ public:
   RCInput evalRC(uint8_t  inBuf[]);
   MotorValues evalMotor(uint8_t inBuf[]);
   GPSValues evalGPS(uint8_t inBuf[]);
+  GPS_TimeValues evalGPS_Time(uint8_t inBuf[]);
 private:
   String dir;
 };
-
-
 

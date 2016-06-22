@@ -3,29 +3,31 @@
 
 Protocol::Protocol() 
 {
-
 }
 
 /*
 We have to combine two uint8 to a single int16
  */
-int16_t readInt16(uint8_t inBuf[], int index) {
+int16_t readInt16(uint8_t inBuf[], int index)
+{
   return  (inBuf[index*2+1] << 8) | inBuf[index*2];
 }
 
-uint16_t readuInt16FromIndex(uint8_t inBuf[], int index) {
+uint16_t readuInt16FromIndex(uint8_t inBuf[], int index)
+{
   return  (inBuf[index+1] << 8) | inBuf[index];
 }
 
-uint32_t readUInt32FromIndex(uint8_t inBuf[], int index) {
+uint32_t readUInt32FromIndex(uint8_t inBuf[], int index)
+{
   uint32_t int1 = ((unsigned int)inBuf[index+1] << 8) | inBuf[index];
   uint32_t int2 =  ((unsigned int)inBuf[index+3] << 8) | inBuf[index+2];
   uint32_t result = (int2 << 16) | int1; 
   return result;
 }
 
-void Protocol::send_msp(uint8_t opcode, uint8_t * data, uint8_t n_bytes) {
-
+void Protocol::send_msp(uint8_t opcode, uint8_t * data, uint8_t n_bytes)
+{
   uint8_t checksum = 0;
 
   Serial.write((byte *)"$M<", 3);
@@ -38,57 +40,56 @@ void Protocol::send_msp(uint8_t opcode, uint8_t * data, uint8_t n_bytes) {
   Serial.write(checksum);
 }
 
-XYAngle Protocol::evalAtt(uint8_t inBuf[]) {
-
+XYAngle Protocol::evalAtt(uint8_t inBuf[])
+{
   int16_t angx = readInt16(inBuf,0);
   int16_t angy = readInt16(inBuf,1);
   int16_t angle = readInt16(inBuf,2);  
 
   XYAngle ang = { 
-    angx, angy, angle  };
+    angx, angy, angle
+    };
   return ang;
 }
 
-
-IMUValues Protocol::evalIMU(uint8_t inBuf[]) {
-
+IMUValues Protocol::evalIMU(uint8_t inBuf[])
+{
   IMUValues result = { 
-    readInt16(inBuf,0), readInt16(inBuf,1), readInt16(inBuf,2), readInt16(inBuf,3), readInt16(inBuf,4), readInt16(inBuf,5)        };
+    readInt16(inBuf,0), readInt16(inBuf,1), readInt16(inBuf,2), readInt16(inBuf,3), readInt16(inBuf,4), readInt16(inBuf,5)
+    };
   return result;
-
 }
 
-
-RCInput Protocol::evalRC(uint8_t inBuf[]) {
-
+RCInput Protocol::evalRC(uint8_t inBuf[])
+{
   int16_t roll = readInt16(inBuf,0);
   int16_t pitch = readInt16(inBuf,1);
   int16_t yaw = readInt16(inBuf,2);
   int16_t throttle = readInt16(inBuf,3);
 
-  RCInput result = { 
-    roll, pitch, yaw, throttle           };
+  RCInput result = {
+    roll, pitch, yaw, throttle
+    };
 
   return result;
-
 }
 
-MotorValues Protocol::evalMotor(uint8_t inBuf[]) {
-
+MotorValues Protocol::evalMotor(uint8_t inBuf[])
+{
   int16_t motor1 = readInt16(inBuf,0);
   int16_t motor2 = readInt16(inBuf,1);
   int16_t motor3 = readInt16(inBuf,2);
   int16_t motor4 = readInt16(inBuf,3);
 
   MotorValues result = { 
-    motor1, motor2, motor3, motor4         };
+    motor1, motor2, motor3, motor4
+    };
 
   return result;
-
 }
 
-GPSValues Protocol::evalGPS(uint8_t inBuf[]) {
-
+GPSValues Protocol::evalGPS(uint8_t inBuf[])
+{
   // 0 or 1
   uint8_t hasFix = inBuf[0];
   uint8_t satNumber = inBuf[1];
@@ -101,9 +102,24 @@ GPSValues Protocol::evalGPS(uint8_t inBuf[]) {
   uint16_t speedValue = readuInt16FromIndex(inBuf,12);
 
   GPSValues result = { 
-    hasFix, satNumber, lat, lng, alt, speedValue        };
+    hasFix, satNumber, lat, lng, alt, speedValue
+    };
 
   return result;
+}
 
+GPS_TimeValues Protocol::evalGPS_Time(uint8_t inBuf[])
+{
+  // GNSS Week format (http://www.gnsscalendar.com/)
+  uint16_t week = readuInt16FromIndex(inBuf, 0);
+
+  // GNSS Week format (http://www.gnsscalendar.com/)
+  uint32_t tow = readUInt32FromIndex(inBuf, 2);
+
+  GPS_TimeValues result = { 
+    week, tow
+    };
+
+  return result;
 }
 
