@@ -122,4 +122,3 @@ GPS_TimeValues Protocol::evalGPS_Time(uint8_t inBuf[])
 
   return result;
 }
-

@@ -60,4 +60,3 @@ static enum _serial_state
   HEADER_CMD,
 } 
 c_state;
-

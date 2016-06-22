@@ -190,4 +190,3 @@ void CardLogger::logGPS_Time(GPS_TimeValues values)
 
   dataFile.close(); 
 }
-

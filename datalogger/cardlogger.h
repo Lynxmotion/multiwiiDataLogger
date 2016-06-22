@@ -19,4 +19,3 @@ public:
 private:
   String dir;
 };
-
