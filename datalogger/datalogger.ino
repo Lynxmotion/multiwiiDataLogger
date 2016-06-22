@@ -48,6 +48,7 @@ void loop() // run over and over
   p.send_msp(MSP_RAW_GPS, data, 0);
   readData();
   p.send_msp(MSP_TIME_GPS, data, 0);
+  readData();
 }
 
 void readData()
