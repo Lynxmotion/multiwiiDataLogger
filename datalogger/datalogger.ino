@@ -42,10 +42,12 @@ void setup()
   digitalWrite(LED_STAT1, LOW); delay(250);
   digitalWrite(LED_STAT1, HIGH); delay(250);
   delay(1000);
-  
+
   Serial.begin(115200);
   logger.init();
 }
+
+uint8_t k = 0;
 
 void loop() // run over and over
 {
@@ -54,25 +56,25 @@ void loop() // run over and over
 
   // If you dont need a certain log just comment out the two lines for sending and reading
   p.send_msp(MSP_ATTITUDE, data, 0);
-  digitalWrite(LED_STAT1, LOW);
   readData();
-  digitalWrite(LED_STAT1, HIGH);
   p.send_msp(MSP_RAW_IMU, data, 0);
-  digitalWrite(LED_STAT1, LOW);
   readData();
-  digitalWrite(LED_STAT1, HIGH);
   p.send_msp(MSP_RC, data, 0);
-  digitalWrite(LED_STAT1, LOW);
   readData();
-  digitalWrite(LED_STAT1, HIGH);
   p.send_msp(MSP_RAW_GPS, data, 0);
-  digitalWrite(LED_STAT1, LOW);
   readData();
-  digitalWrite(LED_STAT1, HIGH);
   p.send_msp(MSP_TIME_GPS, data, 0);
-  digitalWrite(LED_STAT1, LOW);
   readData();
-  digitalWrite(LED_STAT1, HIGH);
+
+  // Toggle LED every other pass
+  if((++k % 2))
+  {
+      digitalWrite(LED_STAT1, LOW);
+  }
+  else
+  {
+      digitalWrite(LED_STAT1, HIGH);
+  }
 }
 
 void readData()
