@@ -7,6 +7,8 @@
 
 #include <SD.h>
 
+#define LED_STAT1   5     // PD5
+
 /*
  ** MOSI - pin 11
  ** MISO - pin 12
@@ -35,8 +37,14 @@ void CardLogger::init()
 
   pinMode(chipSelect, OUTPUT);
 
-  if (!SD.begin(chipSelect))
+  if (!SD.begin())
   {
+    // infinite loop with blinking LED_STAT1
+    while(1)
+    {
+      digitalWrite(LED_STAT1, LOW); delay(100);
+      digitalWrite(LED_STAT1, HIGH); delay(100);
+    }
     return;
   }
 
@@ -186,7 +194,8 @@ void CardLogger::logGPS_Time(GPS_TimeValues values)
   dataFile.print(values.week);
 
   dataFile.print(seperator);
-  dataFile.print(values.tow);
+  dataFile.println(values.tow);
 
   dataFile.close(); 
 }
+
