@@ -56,7 +56,7 @@ hasGPSFix: 0 = no, 1 = yes, lat,lng: in 1 / 10 000 000 deg, altitude: meter, gro
 
 openlog
 ===
-You can also use this as an alternative firmware for the openlog hardware(https://www.sparkfun.com/products/9530) which is quite small and combines the board and the sd card reader.
+You can also use this as an alternative firmware for the openlog hardware(http://www.robotshop.com/en/openlog-data-logger.html) which is quite small and combines the board and the sd card reader.
 Don't worry - the original firmware can be flashed back at any time.
 
 A How-To flash this firmware (or the original back) can be found at https://github.com/sparkfun/OpenLog/wiki/Flashing-Firmware
